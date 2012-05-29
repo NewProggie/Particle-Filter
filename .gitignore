@@ -12,3 +12,7 @@
 *.a
 
 # Ignore build directory
+build/
+
+# Ignore OSX Trash
+.DS_Store
