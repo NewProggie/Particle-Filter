@@ -1,14 +1,17 @@
-#include "cv.h"
-#include "highgui.h"
+#include <cv.h>
+#include <highgui.h>
+#include "constants.h"
 #include <iostream>
+
+#include "colorFeatures.h"
 
 using namespace std;
 
 int main() {
     
-    char* WINDOW_TITLE = "Particle Filter";
     CvCapture* capture = cvCaptureFromCAM(CV_CAP_ANY);
     assert(capture);
+    colorFeatures cf;
     
     cvNamedWindow(WINDOW_TITLE, CV_WINDOW_AUTOSIZE);
     while (1) {
@@ -17,6 +20,7 @@ int main() {
             cerr << "ERROR: frame is null" << endl;
             break;
         } else {
+            frame = cf.bgr2hsv(frame);
             cvShowImage(WINDOW_TITLE, frame);
         }
         

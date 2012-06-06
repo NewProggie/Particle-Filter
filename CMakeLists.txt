@@ -13,6 +13,9 @@ SET(GSLLIB ${LIBS} ${GSL_LIBRARIES} ${GSLCBLAS_LIBRARIES})
 # list of sources
 SET(SOURCES
 src/main.cpp
+src/constants.h
+src/colorFeatures.h src/colorFeatures.cpp
+src/adaboostDetect.h src/adaboostDetect.cpp
 )
 
 IF (APPLE)
