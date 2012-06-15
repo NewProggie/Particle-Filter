@@ -17,6 +17,7 @@ src/constants.h
 src/colorFeatures.h src/colorFeatures.cpp
 src/adaboostDetect.h src/adaboostDetect.cpp
 src/particleFilter.h src/particleFilter.cpp
+src/tracker.h src/tracker.cpp
 )
 
 IF (APPLE)
