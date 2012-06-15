@@ -5,7 +5,7 @@
 #include <highgui.h>
 
 /* Ali and M. N. Dailey, "Multiple human tracking in high-density crowds"
- Abschnitt XXX */
+ Abschnitt 2.2 Detection */
 
 typedef struct ObjectPos {
     float x;
