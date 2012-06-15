@@ -23,7 +23,7 @@ public:
     void initTracker(IplImage* frame, CvRect* regions, int nRegions, int particlesPerObject);
     void mergeTrack();
     void removeTrack(int n);
-    void next(IplImage* frame, adaboostDetect* adaboost, char* filename);
+    void next(IplImage* frame, adaboostDetect* adaboost, const char* filename);
     void updateObjectWeights(IplImage* frame, adaboostDetect* adaboost);
     void addObjects(IplImage* frame, CvRect* regions, int nRegions);
     void showResults(IplImage* frame, int param);

@@ -62,13 +62,11 @@ void tracker::removeTrack(int n) {
     nTrajectories--;
 }
 
-void tracker::next(IplImage* frame, adaboostDetect* adaboost, char* filename) {
+void tracker::next(IplImage* frame, adaboostDetect* adaboost, const char* filename) {
     colorFeatures cf;
     IplImage* frameHSV = cf.bgr2hsv(frame);
     int w = frame->width;
     int h = frame->height;
-    CvRect* rects = 0;
-    int ntrack = 0;
     for (int i=0; i < nTrajectories; i++) {
         trajectories[i].object->transition(w, h);
         trajectories[i].object->updateWeight(frameHSV, trajectories[i].histo);
