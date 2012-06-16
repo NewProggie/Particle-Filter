@@ -14,5 +14,13 @@
 # Ignore build directory
 build/
 
-# Ignore OSX Trash
+# Ignore OSX trash
 .DS_Store
+
+# Ignore LaTeX trash
+.aux
+.bbl
+.blg
+.fdb_latexmk
+.log
+.synctex.gz
