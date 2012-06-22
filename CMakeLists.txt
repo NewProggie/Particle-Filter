@@ -11,7 +11,7 @@ INCLUDE_DIRECTORIES(${GSL_INCLUDE_DIRS} ${GSLCBLAS_INCLUDE_DIRS})
 SET(GSLLIB ${LIBS} ${GSL_LIBRARIES} ${GSLCBLAS_LIBRARIES})
 
 # set constant paths to video and cascades.xml file
-SET(VIDEO_PATH "${CMAKE_SOURCE_DIR}/data/Fussgaengerzone.m4v")
+SET(VIDEO_PATH "${CMAKE_SOURCE_DIR}/data/fussgaengerzone.mp4")
 SET(CASCADE_XML_PATH "${CMAKE_SOURCE_DIR}/data/cascades.xml")
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/src/constants.h 
 	${CMAKE_CURRENT_SOURCE_DIR}/src/constants.h @ONLY)
