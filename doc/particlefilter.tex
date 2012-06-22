@@ -1,5 +1,5 @@
 \documentclass[a4paper, 11pt, twocolumn]{article}
-\usepackage[latin1]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage[T1]{fontenc}
 \usepackage[ngerman]{babel}
@@ -16,34 +16,64 @@
 \fancyfoot[C]{\thepage}%  Spezielle Fusszeile
 \begin{document}
 
-\title{\textbf{Tracking von Gesichtern in belebten Umgebungen}}
-\author{ \textit{Kai Wolf} \\ Kai.B.Wolf@student.hs-rm.de}
+\title{\textbf{Tracking von Gesichtern in belebten Umgebungen mit Hilfe eines Partikelfilters}}
+\author{ \textit{Kai Wolf} \\ Kai.B.Wolf@student.hs-rm.de\vspace{0.8cm}\\Hochschule RheinMain\\University of Applied Sciences\\Wiesbaden Rüsselsheim Geisenheim}
 \date{\today\\[5mm]
 \begin{center}
 \textbf{Zusammenfassung}\\[2mm]
 \begin{minipage}{0.9\textwidth}
-Beginn der Zusammenfassung
+Dieses Projekt ist im Rahmen der Vertiefungsveranstaltung Machine Learning im Masterstudiengang Informatik an der Hochschule RheinMain entstanden. Die Veranstaltung fand im Sommersemester 2012 statt und wurde von Prof. Dr. Schwanecke betreut. Die vorliegende Arbeit behandelt das automatisierte Tracking von Personen anhand des Gesichts in belebten Umgebungen. Dabei werden klassifizierte Personen mit Hilfe eines Partikelfilters über mehrere Frames hinweg verfolgt. Der Quelltext zu dieser Arbeit basiert weitestgehend auf der Veröffentlichung von M. Ali, Irshad and Dailey, Multiple human tracking in high-density crowds. Springer Berlin / Heidelberg, 2009, pp. 540-549~\cite{aliMultipleHuman}.
 \end{minipage}
 \end{center}
 } 
 \maketitle
-% \vspace{15pt}
 
-\section{Motivation}
+\section{Einleitung} % (fold)
+\label{sec:einleitung}
+Das automatisierte Tracking von Personen in einem Videobild ist eine anspruchsvolle Aufgabe aus dem Bereich Machine Learning. Dabei müssen gleich mehrere Problemstellungen gelöst werden: Erfolgreiche Erkennung von gesuchten Objekten im Videobild, Verfolgung der zuvor entdeckten Objekte über mehrere Frames hinweg und schließlich die Anpassung der Verfolgung unter Einbeziehung des Verhaltens des Objekts~\cite{Yilmaz2006}. 
+Das Gesicht einer Person ist im Allgemeinen ein stabiles Feature für die Wiedererkennung~\cite{ViolaRobustObject2001}. Dennoch können bei der Detektion gleich mehrere Probleme auftreten: 
+Zum einen kann die Erkennung von Gesichtern aufgrund von Schatten oder starken Reflektionen beeinträchtigt werden, zum anderen können Gesichter gerade in belebten Umgebungen wie Straßen oder Fussgängerzonen durch andere Menschen oder Gebäude teilweise oder ganz verdeckt werden~\cite{aliMultipleHuman}. 
+Daher verwendet die vorliegende Arbeit einen schnellen und stabilen Viola-Jones-Klassifikator 
 
-\section{Einleitung}
 
-\section{Tracking-Verfahren}
+Die vorliegende Arbeit verwendet einen Viola-Jones-Klassifikator zum Erkennen von Gesichtern und einen Partikelfilter für das Tracking über mehrere Frames.
 
-\subsection{Kalman Filter}
+% section einleitung (end)
 
-\subsection{Particle Filter}
+\section{Bisherige Arbeiten} % (fold)
+\label{sec:bisherige_arbeiten}
 
-\section{Gesichtserkennung}
+% section bisherige_arbeiten (end)
 
-\section{Evaluation}
+\section{Statistische Filter} % (fold)
+\label{sec:statistische_filter}
 
-\section{Zusammenfassung}
+% section statistische_filter (end)
+
+\subsection{Kalman Filter} % (fold)
+\label{sub:kalman_filter}
+
+% subsection kalman_filter (end)
+
+\subsection{Partikelfilter} % (fold)
+\label{sub:partikelfilter}
+
+% subsection partikelfilter (end)
+
+\section{Gesichtserkennung} % (fold)
+\label{sec:gesichtserkennung}
+
+% section gesichtserkennung (end)
+
+\section{Evaluation} % (fold)
+\label{sec:evaluation}
+
+% section evaluation (end)
+
+\section{Zusammenfassung} % (fold)
+\label{sec:zusammenfassung}
+
+% section zusammenfassung (end)
 
 \bibliographystyle{plain}
 \bibliography{/Users/kai/Documents/library}

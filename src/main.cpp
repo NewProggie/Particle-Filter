@@ -1,18 +1,17 @@
 #include <cv.h>
 #include <highgui.h>
-#include "constants.h"
 #include <iostream>
 
 #include "adaboostDetect.h"
 #include "particleFilter.h"
 #include "tracker.h"
+#include "constants.h"
 #include "colorFeatures.h"
 
 using namespace std;
 
 int initDetection(adaboostDetect* detect) {
-    const char* cascadeName = "cascades.xml";
-    detect->cascade = cvLoadHaarClassifierCascade(cascadeName, cvSize(20, 20));
+    detect->cascade = cvLoadHaarClassifierCascade(CASCADE_XML_PATH, cvSize(20, 20));
     if (!detect->cascade) {
         return 0;
     }
@@ -27,14 +26,13 @@ int initDetection(adaboostDetect* detect) {
 }
 
 int main() {
-    const char* vidName = "Fussgaengerzone.m4v";
     IplImage* frame;
     int frameNo = 0, nHeads = 0;
     CvRect* regions;
     adaboostDetect* detect = new adaboostDetect;
     tracker* hTrack = new tracker;
     colorFeatures cf;
-    CvCapture* capture = cvCaptureFromAVI(vidName);
+    CvCapture* capture = cvCaptureFromAVI(VIDEO_PATH);
 
     assert(capture);
     assert(initDetection(detect));
@@ -47,7 +45,7 @@ int main() {
             nHeads = detect->detectObject(frame, &regions);
             hTrack->initTracker(frame, regions, nHeads, 20);
         } else {
-            hTrack->next(frame, detect, vidName);
+            hTrack->next(frame, detect, VIDEO_PATH);
             regions = 0;
             int n = detect->detectObject(frame, &regions);
             nHeads += n;
@@ -57,9 +55,9 @@ int main() {
         hTrack->showResults(frame, 0);
         cvShowImage(WINDOW_TITLE, frame);
         
-//        if ((cvWaitKey(10) & 255) == 27) {
-//            break;
-//        }
+        if ((cvWaitKey(10) & 255) == 27) {
+            break;
+        }
     }
     
     if (capture) {
