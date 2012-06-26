@@ -2,7 +2,7 @@
 
 tracker::tracker() {
     nTrajectories = 0;
-    frameNo = 0;
+    frameNumber = 0;
 }
 
 tracker::~tracker() {
@@ -22,13 +22,13 @@ void tracker::initTracker(IplImage* frame, CvRect* regions, int nRegions, int pa
         trajectories[i].object = pf;
         trajectories[i].object->objectID = 1;
         trajectories[i].object->weight = 1;
-        trajectories[i].stratFrame = 0;
+        trajectories[i].startFrame = 0;
         trajectories[i].histo = computeHistogram(frameHSV, regions[i]);
         trajectories[i].points = (CvPoint*) malloc(sizeof(CvPoint));
-        trajectories[i].points[frameNo] = trajectories[i].object->getParticleCenter();
+        trajectories[i].points[frameNumber] = trajectories[i].object->getParticleCenter();
     }
     
-    frameNo++;
+    frameNumber += 1;
 }
 
 void tracker::mergeTrack() {
@@ -43,7 +43,7 @@ void tracker::mergeTrack() {
             
             d = sqrtf((x1-x) * (x1-x) + (y1-y) * (y1-y));
             if (d < 20) {
-                if (trajectories[i].stratFrame <= trajectories[j].stratFrame) {
+                if (trajectories[i].startFrame <= trajectories[j].startFrame) {
                     trajectories[i].object->weight = 1;
                     trajectories[j].object->weight -= 1;
                 } else {
@@ -62,24 +62,27 @@ void tracker::removeTrack(int n) {
     nTrajectories--;
 }
 
-void tracker::next(IplImage* frame, adaboostDetect* adaboost, const char* filename) {
+void tracker::next(IplImage* frame) {
     colorFeatures cf;
     IplImage* frameHSV = cf.bgr2hsv(frame);
     int w = frame->width;
     int h = frame->height;
     for (int i=0; i < nTrajectories; i++) {
-        trajectories[i].object->transition(w, h);
+//        trajectories[i].object->transition(w, h);
         trajectories[i].object->updateWeight(frameHSV, trajectories[i].histo);
         trajectories[i].object->normalizeWeights();
         trajectories[i].object->resample();
-        trajectories[i].points = (CvPoint*) realloc(trajectories[i].points, (frameNo+1) * sizeof(CvPoint));
-        trajectories[i].points[frameNo] = trajectories[i].object->getParticleCenter();
+        trajectories[i].points = (CvPoint*) realloc(trajectories[i].points, (frameNumber+1) * sizeof(CvPoint));
+        trajectories[i].points[frameNumber] = trajectories[i].object->getParticleCenter();
     }
     
     mergeTrack();
     cvReleaseImage(&frameHSV);
-    frameNo++;
+    frameNumber += 1;
 }
+
+
+
 
 void tracker::updateObjectWeights(IplImage* frame, adaboostDetect* adaboost) {
     IplImage* temp = 0;
@@ -147,13 +150,13 @@ void tracker::addObjects(IplImage* frame, CvRect* regions, int nRegions) {
             trajectories = (trajectory*) realloc (trajectories, (nTrajectories+nw+1) * sizeof(trajectory));
             particleFilter* pf = new particleFilter;
             pf->initParticles(regions[i-nTrajectories], p_perObject);
-            trajectories[nw+nTrajectories].stratFrame = frameNo;
+            trajectories[nw+nTrajectories].startFrame = frameNumber;
             trajectories[nw+nTrajectories].object = pf;
             trajectories[nw+nTrajectories].object->objectID = nw+nTrajectories;
             trajectories[nw+nTrajectories].object->weight = 0.5;
             trajectories[nw+nTrajectories].histo = computeHistogram(frameHSV, regions[i-nTrajectories]);
-            trajectories[nw+nTrajectories].points = (CvPoint*) malloc(frameNo * sizeof(CvPoint));
-            trajectories[nw+nTrajectories].points[frameNo] = trajectories[nw+nTrajectories].object->getParticleCenter();
+            trajectories[nw+nTrajectories].points = (CvPoint*) malloc(frameNumber * sizeof(CvPoint));
+            trajectories[nw+nTrajectories].points[frameNumber-1] = trajectories[nw+nTrajectories].object->getParticleCenter();
             nw++;
         }
     }
@@ -176,10 +179,13 @@ void tracker::addObjects(IplImage* frame, CvRect* regions, int nRegions) {
     }
 }
 
-void tracker::showResults(IplImage* frame, int param) {
+void tracker::showResults(IplImage* frame) {
     for (int i=0; i < nTrajectories; i++) {
-        CvScalar color = CV_RGB(255, 0, 0);
+        CvScalar color;
         if (trajectories[i].object->weight > 0.5) {
+            color = CV_RGB((12*trajectories[i].object->objectID)%255, 
+                           (24*trajectories[i].object->objectID)%255, 
+                           (48*trajectories[i].object->objectID)%255);
             trajectories[i].object->displayParticles(frame, CV_RGB(0, 0, 255), color, SHOW_SELECTED);
             CvFont font;
             cvInitFont(&font, CV_FONT_HERSHEY_PLAIN|CV_FONT_ITALIC, 1, 1, 0, 1);
@@ -219,7 +225,7 @@ histogram* tracker::computeHistogram(IplImage* frame, CvRect region) {
     IplImage* tmp = cvCreateImage(cvGetSize(frame), IPL_DEPTH_32F, 3);
     cvCopy(frame, tmp, NULL);
     cvResetImageROI(frame);
-    histogram* hist = cf.comHistogramHSV(&tmp, 1);
+    histogram* hist = cf.comHistogramHSV(tmp, 1);
     cf.normalizeHistogram(hist);
     cvReleaseImage(&tmp);
     

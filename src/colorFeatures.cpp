@@ -5,7 +5,8 @@ colorFeatures::colorFeatures() {}
 colorFeatures::~colorFeatures() {}
 
 IplImage* colorFeatures::bgr2hsv(IplImage* bgr) {
-    IplImage* bgr32f, * hsv;
+    IplImage* bgr32f;
+    IplImage* hsv;
     
     bgr32f = cvCreateImage( cvGetSize(bgr), IPL_DEPTH_32F, 3 );
     hsv = cvCreateImage( cvGetSize(bgr), IPL_DEPTH_32F, 3 );
@@ -30,10 +31,11 @@ int colorFeatures::histoBinHSV(float h, float s, float v) {
 
 }
 
-histogram* colorFeatures::comHistogramHSV(IplImage** imgs, int n) {
-    IplImage* img;
+histogram* colorFeatures::comHistogramHSV(IplImage* img, int n) {
     histogram* histo;
-    IplImage* h, * s, * v;
+    IplImage* h;
+    IplImage* s;
+    IplImage* v;
     float* hist;
     int i, r, c, bin;
     
@@ -44,9 +46,7 @@ histogram* colorFeatures::comHistogramHSV(IplImage** imgs, int n) {
     memset( hist, 0, histo->n * sizeof(float) );
     
     for( i = 0; i < n; i++ )
-    {
-        
-        img = imgs[i];
+    {        
         h = cvCreateImage( cvGetSize(img), IPL_DEPTH_32F, 1 );
         s = cvCreateImage( cvGetSize(img), IPL_DEPTH_32F, 1 );
         v = cvCreateImage( cvGetSize(img), IPL_DEPTH_32F, 1 );
@@ -108,17 +108,15 @@ void colorFeatures::setpix32f(IplImage* img, int r, int c, float val) {
 }
 
 float colorFeatures::likelihoodHSV( IplImage* img, int r, int c,int w, int h, histogram* ref_histo ) {
-    IplImage* tmp;
     histogram* histo;
     float d_sq;
     
     /* extract region around (r,c) and compute and normalize its histogram */
-    
     cvSetImageROI( img, cvRect( c - w / 2, r - h / 2, w, h ) );
-    tmp = cvCreateImage( cvGetSize(img), IPL_DEPTH_32F, 3 );
+    IplImage* tmp = cvCreateImage( cvGetSize(img), IPL_DEPTH_32F, 3 );
     cvCopy( img, tmp, NULL );
     cvResetImageROI( img );
-    histo = comHistogramHSV( &tmp, 1 );
+    histo = comHistogramHSV( tmp, 1 );
     cvReleaseImage( &tmp );
     normalizeHistogram( histo );
     

@@ -42,10 +42,8 @@ int adaboostDetect::detectAndDraw(IplImage* img, CvRect** regions) {
         }
         CvRect* r = (CvRect*) cvGetSeqElem(faces, i);
         CvPoint center;
-        int radius;
         center.x = cvRound((r->x + r->width * 0.5) * scaleFactor);
         center.y = cvRound((r->y + r->height * 0.5) * scaleFactor);
-        radius = cvRound((r->width + r->height) * 0.25 * scaleFactor);
         nx1 = cvRound(r->x * scaleFactor);
         ny1 = cvRound(r->y * scaleFactor);
         nx2 = cvRound((r->x + r->width) * scaleFactor);
@@ -68,7 +66,7 @@ int adaboostDetect::detectAndDraw(IplImage* img, CvRect** regions) {
 }
 
 int adaboostDetect::detectObject(IplImage* img, CvRect** regions) {
-    int fii = 0;
+    int nHeads = 0;
     IplImage* gray = cvCreateImage( cvSize(img->width,img->height), 8, 1 );
     IplImage* smallImg = cvCreateImage( cvSize( cvRound (img->width/scaleFactor),
                                                 cvRound (img->height/scaleFactor)), 8, 1 );
@@ -79,18 +77,15 @@ int adaboostDetect::detectObject(IplImage* img, CvRect** regions) {
     
     int nx1, nx2, ny1, ny2;
 	CvRect* nR;
-    
-	if(!cascade) {
-        return 0;
-    }
+    assert(cascade);
 		
     CvSeq* faces = cvHaarDetectObjects( smallImg, cascade, storage, scaleFactor, minNeighbours, flags, minSize);
     for (int i=0; i<(faces ? faces->total : 0); i++) {
         CvRect* r = (CvRect*) cvGetSeqElem(faces, i);
-        if (fii == 0) {
+        if (nHeads == 0) {
             nR = (CvRect*) malloc(1 * sizeof(CvRect));
         } else {
-            nR = (CvRect*) realloc(nR, (fii+1) * sizeof(CvRect));
+            nR = (CvRect*) realloc(nR, (nHeads+1) * sizeof(CvRect));
         }
         
         if ((r->width <= maxSize.width) && (r->height <= maxSize.height)) {
@@ -98,8 +93,8 @@ int adaboostDetect::detectObject(IplImage* img, CvRect** regions) {
             ny1 = cvRound(r->y * scaleFactor);
             nx2 = cvRound((r->x + r->width) * scaleFactor);
             ny2 = cvRound((r->y + r->height) * scaleFactor);
-            nR[fii] = cvRect(nx1, ny1, nx2-nx1, ny2-ny1);
-            fii++;
+            nR[nHeads] = cvRect(nx1, ny1, nx2-nx1, ny2-ny1);
+            nHeads++;
         }
     }
     
@@ -108,7 +103,7 @@ int adaboostDetect::detectObject(IplImage* img, CvRect** regions) {
     cvReleaseImage(&gray);
     cvReleaseImage(&smallImg);
     
-    return fii;
+    return nHeads;
 }
 
 int adaboostDetect::detectCheck(IplImage* img, float maxSizeDiff, float maxPosDiff, int nStages) {

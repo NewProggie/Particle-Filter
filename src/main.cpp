@@ -26,8 +26,12 @@ int initDetection(adaboostDetect* detect) {
 }
 
 int main() {
+    /** Current Frame as IplImage */
     IplImage* frame;
-    int frameNo = 0, nHeads = 0;
+    /** current frame number */
+    int frameNo = 0;
+    /** number of detected heads */
+    int nHeads = 0;
     CvRect* regions;
     adaboostDetect* detect = new adaboostDetect;
     tracker* hTrack = new tracker;
@@ -45,15 +49,16 @@ int main() {
             nHeads = detect->detectObject(frame, &regions);
             hTrack->initTracker(frame, regions, nHeads, 20);
         } else {
-            hTrack->next(frame, detect, VIDEO_PATH);
+            hTrack->next(frame);
             regions = 0;
             int n = detect->detectObject(frame, &regions);
             nHeads += n;
             hTrack->addObjects(frame, regions, n);
         }
         
-        hTrack->showResults(frame, 0);
+        hTrack->showResults(frame);
         cvShowImage(WINDOW_TITLE, frame);
+        frameNo++;
         
         if ((cvWaitKey(10) & 255) == 27) {
             break;

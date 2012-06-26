@@ -13,7 +13,7 @@ typedef struct trajectory {
     particleFilter* object;
     histogram* histo;
     CvMat* CCV;
-    int stratFrame;
+    int startFrame;
 } trajectory;
 
 class tracker {
@@ -23,17 +23,17 @@ public:
     void initTracker(IplImage* frame, CvRect* regions, int nRegions, int particlesPerObject);
     void mergeTrack();
     void removeTrack(int n);
-    void next(IplImage* frame, adaboostDetect* adaboost, const char* filename);
+    void next(IplImage* frame);
     void updateObjectWeights(IplImage* frame, adaboostDetect* adaboost);
     void addObjects(IplImage* frame, CvRect* regions, int nRegions);
-    void showResults(IplImage* frame, int param);
+    void showResults(IplImage* frame);
     IplImage* subtractObjects(IplImage* frame);
     
     
     trajectory* trajectories;
     int nTrajectories;
-    int frameNo;
     int p_perObject;
+    int frameNumber;
     int nbins;
     int ccvth;
     int mode;

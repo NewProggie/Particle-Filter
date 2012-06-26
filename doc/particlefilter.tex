@@ -63,6 +63,28 @@ Die vorliegende Arbeit verwendet einen Viola-Jones-Klassifikator zum Erkennen vo
 \section{Gesichtserkennung} % (fold)
 \label{sec:gesichtserkennung}
 
+% 1. Start des Programms
+% 2. Laden des Viola-Jones adaboost-like cascade classifier (main.cpp)
+% 3. Einlesen des Videos frame für frame (main.cpp)
+% 4. Im ersten Frame: Start der Gesichtserkennung (adaboostDetect.cpp)
+% 4.1. Umwandlung des Frames in Graustufenbild
+% 4.2. Resize des Frames (im Code um 10%)
+% 4.3. Histogrammausgleich des Bilds
+% 4.4. Erkennen der max. Anzahl an Gesichtern im Bild (cvHaarDetectObjects)
+% 4.5. Falls erkanntes Gesicht innerhalb vorgegebener Parameter( Größe),
+%      speichern von Rechteckkoordinaten rund um das Gesicht
+% 4.6. Speichern aller Regionen, in denen Gesichter entdeckt wurden
+% 5. Initialisierung des Trackers (tracker.cpp)
+% 5.1. Umwandlung des akt. Frames in HSV-Farbschema
+% 5.2. Initialisierung des Partikelfiters (particleFilter.cpp)
+%
+% 5.3. Für jedes entdeckte Gesicht: Initialisierung eines Bewegungspfads mit
+%      Speichern in welchem Frame Bewegungspfad gesetzt wurde, Gewicht 1,
+%      Histogramm der entsprechenden Region um das Gesicht und mit KO des
+%      Partikelzentrums
+
+
+
 % section gesichtserkennung (end)
 
 \section{Evaluation} % (fold)
