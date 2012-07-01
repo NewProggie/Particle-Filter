@@ -22,7 +22,7 @@
 \begin{center}
 \textbf{Zusammenfassung}\\[2mm]
 \begin{minipage}{0.9\textwidth}
-Dieses Projekt ist im Rahmen der Vertiefungsveranstaltung Machine Learning im Masterstudiengang Informatik an der Hochschule RheinMain entstanden. Die Veranstaltung fand im Sommersemester 2012 statt und wurde von Prof. Dr. Schwanecke betreut. Die vorliegende Arbeit behandelt das automatisierte Tracking von Personen anhand des Gesichts in belebten Umgebungen. Dabei werden klassifizierte Personen mit Hilfe eines Partikelfilters über mehrere Frames hinweg verfolgt. Der Quelltext zu dieser Arbeit basiert weitestgehend auf der Veröffentlichung von M. Ali, Irshad and Dailey, Multiple human tracking in high-density crowds. Springer Berlin / Heidelberg, 2009, pp. 540-549~\cite{aliMultipleHuman}.
+Dieses Projekt ist im Rahmen der Vertiefungsveranstaltung Machine Learning im Masterstudiengang Informatik an der Hochschule RheinMain entstanden. Die Veranstaltung fand im Sommersemester 2012 statt und wurde von Prof. Dr. Schwanecke betreut. Die vorliegende Arbeit behandelt das automatisierte Tracking von Personen anhand des Gesichts in belebten Umgebungen. Dabei werden klassifizierte Personen mit Hilfe eines Partikelfilters über mehrere Frames hinweg verfolgt. Der Quelltext zu dieser Arbeit basiert weitestgehend auf der Veröffentlichung aus dem Jahr 2009~\cite{aliMultipleHuman}.
 \end{minipage}
 \end{center}
 } 
@@ -33,59 +33,95 @@ Dieses Projekt ist im Rahmen der Vertiefungsveranstaltung Machine Learning im Ma
 Das automatisierte Tracking von Personen in einem Videobild ist eine anspruchsvolle Aufgabe aus dem Bereich Machine Learning. Dabei müssen gleich mehrere Problemstellungen gelöst werden: Erfolgreiche Erkennung von gesuchten Objekten im Videobild, Verfolgung der zuvor entdeckten Objekte über mehrere Frames hinweg und schließlich die Anpassung der Verfolgung unter Einbeziehung des Verhaltens des Objekts~\cite{Yilmaz2006}. 
 Das Gesicht einer Person ist im Allgemeinen ein stabiles Feature für die Wiedererkennung~\cite{ViolaRobustObject2001}. Dennoch können bei der Detektion gleich mehrere Probleme auftreten: 
 Zum einen kann die Erkennung von Gesichtern aufgrund von Schatten oder starken Reflektionen beeinträchtigt werden, zum anderen können Gesichter gerade in belebten Umgebungen wie Straßen oder Fussgängerzonen durch andere Menschen oder Gebäude teilweise oder ganz verdeckt werden~\cite{aliMultipleHuman}. 
-Daher verwendet die vorliegende Arbeit einen schnellen und stabilen Viola-Jones-Klassifikator 
-
-
-Die vorliegende Arbeit verwendet einen Viola-Jones-Klassifikator zum Erkennen von Gesichtern und einen Partikelfilter für das Tracking über mehrere Frames.
+Die vorliegende Arbeit verwendet zur Lösung der aufgezählten Probleme einen robusten Viola-Jones-Klassifikator zum Erkennen von Gesichtern und einen Partikelfilter für das Tracking über mehrere Frames. Dabei wird für jedes klassifizierte Gesicht ein Bewegungspfad initialisiert, der die Bewegung einer Person anhand ihres Gesichts über mehrere Frames hinweg verfolgt. Durch das in~\cite{aliMultipleHuman} beschriebene \emph{confirmation-by-classification}-Verfahren wird für jeden Frame erneut der Gesichtsklassifikator benutzt, der für jedes klassifizierte Gesicht rund um die zuletzt gemessene Position erneut nach Gesichtern sucht und dem dazugehörigen Bewegungspfad zuordnet. 
 
 % section einleitung (end)
 
 \section{Bisherige Arbeiten} % (fold)
 \label{sec:bisherige_arbeiten}
 
+Für das automatisierte Tracking von Personen in einem Videobild existieren verschiedene Ansätze, die das Tracking von Personen über ein Bewegungsmodel realisieren. In der Arbeit von~\cite{zhaoSegmentationTracking} wird die Bewegung einer Person anhand des starr bleibenden Hintergrunds detektiert. In der Veröffentlichung von~\cite{Zhao2004} werden Personen anhand ihrer Körperform identifiziert und die Tatsache genutzt, dass diese (meist) auf einer Ebene durch das Videobild laufen. Eine etwas ältere Arbeit aus dem Jahr 2001 identifiziert Objekte anhand ihrer Features, die zusammengenommen, in nachfolgenden Frames wiedergefunden werden können~\cite{Veenman2001}.
+
+Alle diese Verfahren funktionieren jedoch bei steigender Anzahl von Personen im Videobild nicht mehr richtig, da dadurch gesamte Szene in Bewegung gerät oder viele Personen im Bild durch andere Personen oder Gegenstände teilweise oder komplett verdeckt werden. Unter diesen Bedingungen stellt das Gesicht einer Person das einzige Feature dar, das in einem Videobild stabil wiedererkannt werden kann~\cite{aliMultipleHuman}.
+
 % section bisherige_arbeiten (end)
 
 \section{Statistische Filter} % (fold)
 \label{sec:statistische_filter}
 
+Statistische Filter fassen Messwerte als Wahrscheinlichkeitsverteilungen auf. 
+Einer der am häufigsten eingesetzten statistischen Filter ist die Klasse der sogenannten \emph{Kalman-Filter}~\cite{MarslandBook}.
+
 % section statistische_filter (end)
 
-\subsection{Kalman Filter} % (fold)
+\subsection{Kalman-Filter} % (fold)
 \label{sub:kalman_filter}
+
+Das Kalman-Filter ist ein rekursiv arbeitender Filter, der für ein gegebenes System den nachfolgenden (diskreten) Systemzustand unter Berücksichtigung von normalverteilten Fehlern voraussagt. Dabei wird angenommen, dass die Veränderung des Systemzustands linear und a-priori bekannt ist~\cite{Welch1995}. Seien die Messwerte m durch Vektoren dargestellt. Dann sei $X_k$ der Zustand des Systems zum Zeitpunkt $t_k, X_k \in R^m$. Die einzelnen Systemzustände sind diskret, d.h. $t_k = t_0 + k \cdot \delta t$. Der aktuelle Systemzustand $X_k$ lässt sich mit Hilfe des vorangegangenen Zustands $X_{k-1}$ durch folgende lineare Gleichung modellieren:
+\[
+	X_k = F_{k-1} \cdot X_{k-1} + B_{k-1} \cdot u_{k-1} + w_{k-1}
+\]
+Dabei ist $F_{k-1}$ die Zustandsübergangsmatrix, $B_{k-1}$ die Dynamik der Störung (ebenfalls modelliert über eine Matrix), $u_{k-1}$ eine deterministische Störung und $w_{k-1}$ ein zufälliges Rauschen. Die einzelnen $w_i$ sind eine stochastische Größe, modelliert durch eine Normalverteilung mit dem Mittelwert 0 und der Kovarianzmatrix $Q_i$. Die einzelnen $\sum_{k=0}^k~X_k$ bilden einen stochastischen Prozess (eine sogenannte Markov-Kette). Dabei hängt das aktuelle $X_k$ nur von seinem Vorgänger $X_{k-1}$ ab (Markov-Modell erster Ordnung).
+
+Die $X_k$ sind nicht direkt bekannt, sondern werden durch eine (fehlerbehaftete) Messung ermittelt. Sei $Z_k$ die Messung des Systemzustands zum Zeitpunkt $t_k, Z_k \in R^m$. Der Zusammenhang zwischen dem Systemzustand und der Messung wird durch die lineare Gleichung:
+\[
+	Z_k = H_k \cdot X_{k-1} + v_k
+\]
+
+modelliert. Dabei ist $H_k$ die Beobachtungsmatrix und die $v_k$ eine stochastische Größe modelliert durch eine Normalverteilung mit Mittelwert 0 und der Kovarianzmatrix $R_i$. Die $v_i$ sind dabei unabhängig von den $w_i$ (Hidden-Markov-Model~\cite{MarslandBook}). Für die Zufallsvariable $Z_k$ nimmt man konkrete Messungen vor, mit denen sich der Systemzustand $\widehat{X}_k$ zum Zeitpunkt $t_k, \widehat{X}_k \in R^m$ schätzen lässt. Das $\widehat{X}_k$ ist dabei eine normalverteilte Zufallsvariable mit dem Mittelwert $\widehat{m}_k$ und der Kovarianz $\widehat{P}_k$.
+\begin{figure}[htpb]
+	\centering
+	\includegraphics[width=0.5\textwidth]{kalman.eps}
+	\caption{Prinzipielle Vorgehensweise}
+	\label{fig:kalman}
+\end{figure}
+
+Die beiden Variablen werden initial mit $\widehat{m}_0 = 0$ und $\widehat{P}_0$ mit der Einheitsmatrix initialisiert. 
 
 % subsection kalman_filter (end)
 
 \subsection{Partikelfilter} % (fold)
 \label{sub:partikelfilter}
 
+
 % subsection partikelfilter (end)
 
-\section{Gesichtserkennung} % (fold)
-\label{sec:gesichtserkennung}
+\section{Gesichtserkennung und Tracking} % (fold)
+\label{sec:gesichtserkennung_und_tracking}
+
+Zu Beginn des Programms wirde ein trainierter Viola-Jones Klassifikator initialisiert.  und frameweise das Video eingelesen. Jeder Frame wird in der Vorverarbeitung zuerst in ein Graustufenbild umgewandelt und die Bildgröße um 10\% reduziert. Anschließend erfolgt ein Histogrammausgleich des Bilds.
 
 % 1. Start des Programms
 % 2. Laden des Viola-Jones adaboost-like cascade classifier (main.cpp)
 % 3. Einlesen des Videos frame für frame (main.cpp)
 % 4. Im ersten Frame: Start der Gesichtserkennung (adaboostDetect.cpp)
-% 4.1. Umwandlung des Frames in Graustufenbild
-% 4.2. Resize des Frames (im Code um 10%)
-% 4.3. Histogrammausgleich des Bilds
-% 4.4. Erkennen der max. Anzahl an Gesichtern im Bild (cvHaarDetectObjects)
-% 4.5. Falls erkanntes Gesicht innerhalb vorgegebener Parameter( Größe),
-%      speichern von Rechteckkoordinaten rund um das Gesicht
-% 4.6. Speichern aller Regionen, in denen Gesichter entdeckt wurden
-% 5. Initialisierung des Trackers (tracker.cpp)
-% 5.1. Umwandlung des akt. Frames in HSV-Farbschema
-% 5.2. Initialisierung des Partikelfiters (particleFilter.cpp)
-%
-% 5.3. Für jedes entdeckte Gesicht: Initialisierung eines Bewegungspfads mit
-%      Speichern in welchem Frame Bewegungspfad gesetzt wurde, Gewicht 1,
-%      Histogramm der entsprechenden Region um das Gesicht und mit KO des
-%      Partikelzentrums
+%   4.1. Umwandlung des Frames in Graustufenbild
+%   4.2. Resize des Frames (im Code um 10%)
+%   4.3. Histogrammausgleich des Bilds
+%   4.4. Erkennen der max. Anzahl an Gesichtern im Bild (cvHaarDetectObjects)
+%   4.5. Falls erkanntes Gesicht innerhalb vorgegebener Parameter( Größe),
+%        speichern von Rechteckkoordinaten rund um das Gesicht
+%   4.6. Speichern aller Regionen, in denen Gesichter entdeckt wurden
+%   4.7. Initialisierung des Trackers (tracker.cpp)
+%   4.8. Umwandlung des akt. Frames in HSV-Farbschema
+%   4.9. Initialisierung des Partikelfiters (20 Partikel pro Objekt) (particleFilter.cpp)
+%   4.10. Für jedes entdeckte Gesicht: Initialisierung eines Bewegungspfads mit
+%        Speichern in welchem Frame Bewegungspfad gesetzt wurde, Gewicht 1,
+%        Histogramm der entsprechenden Region um das Gesicht und mit KO des
+%        Partikelzentrums und Partikelfilter mit max 50 Partikeln
+% 5. Für jeden weiteren Frame: Umwandeln des akt. Bilds nach HSV (tracker::next)
+%   5.1. Für alle Bewegungspfade: Update der Partikel (transition)
+%   5.2. Update der Gewichte und Normalisierung der Gewichte
+%   5.3. Resampling des Partikelfilters
+%   5.4. tracker::mergeTrack (???)
+%   5.5. (Erneute) Suche nach Gesichtern im aktuellen Frame
+%   5.6. Hinzufügen neuer Bewegungspfade für neue Gesichter, falls Gesichter für
+%        Bewegungspfade nicht mehr gefunden wurden, wird Gewichtung für Bewegungspfad
+%        um 0.5 erniedrigt. Falls Gewicht für Bewegungspfad kleiner -3, dann wird dieser
+%        Bewegungspfad komplett aus dem Tracking genommen.
 
 
-
-% section gesichtserkennung (end)
+% section gesichtserkennung_und_tracking (end)
 
 \section{Evaluation} % (fold)
 \label{sec:evaluation}
@@ -97,7 +133,7 @@ Die vorliegende Arbeit verwendet einen Viola-Jones-Klassifikator zum Erkennen vo
 
 % section zusammenfassung (end)
 
-\bibliographystyle{plain}
+\bibliographystyle{apalike}
 \bibliography{/Users/kai/Documents/library}
 
 \end{document}
