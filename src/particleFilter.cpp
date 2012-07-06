@@ -147,10 +147,11 @@ void particleFilter::updateWeight(IplImage* frameHSV, histogram* objectHisto) {
 
 particle particleFilter::calTransition(particle p, int w, int h, gsl_rng* rng) {
     particle pn;
-    /** double x = A1 * (p.x - p.x0) + A2 * (p.xp - p.x0) + B0 * gsl_ran_gaussian(rng, TRANS_X_STD) + p.x0;
+    double x = A1 * (p.x - p.x0) + A2 * (p.xp - p.x0) + B0 * gsl_ran_gaussian(rng, TRANS_X_STD) + p.x0;
     double y = A1 * (p.y - p.y0) + A2 * (p.yp - p.y0) + B0 * gsl_ran_gaussian(rng, TRANS_Y_STD) + p.y0;
-    double s = A1 * (p.s - 1.0) + A2 * (p.sp - 1.0) + B0 * gsl_ran_gaussian(rng, TRANS_S_STD) + 1.0; */
     
+    pn.x = (float) MAX( 0.0, MIN((float) w - 1.0, x));
+    pn.y = (float) MAX( 0.0, MIN((float) h - 1.0, y));
     pn.s = 1.0;
     pn.xp = p.x;
     pn.yp = p.y;

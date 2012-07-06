@@ -4,9 +4,6 @@
 #include <cv.h>
 #include <highgui.h>
 
-/* Ali and M. N. Dailey, "Multiple human tracking in high-density crowds"
- Abschnitt 2.2 Detection */
-
 typedef struct ObjectPos {
     float x;
     float y;
@@ -15,6 +12,9 @@ typedef struct ObjectPos {
     int neighbours;
 } ObjectPos;
 
+/**
+ Ali and M. N. Dailey, "Multiple human tracking in high-density crowds"
+ Abschnitt 2.2 Detection */
 class adaboostDetect {
 public:
     adaboostDetect();

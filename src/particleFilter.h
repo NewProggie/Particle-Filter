@@ -6,9 +6,6 @@
 #include <gsl/gsl_randist.h>
 #include <time.h>
 
-/* Ali and M. N. Dailey, "Multiple human tracking in high-density crowds"
- Abschnitt 2.3 Particle filter */
-
 #define TRANS_X_STD 0.5
 #define TRANS_Y_STD 1.0
 #define TRANS_S_STD 0.001
@@ -35,6 +32,8 @@ typedef struct particle {
     float w; /** weight*/
 } particle;
 
+/** Ali and M. N. Dailey, "Multiple human tracking in high-density crowds"
+ Abschnitt 2.3 Particle filter */
 class particleFilter {
 public:
     particleFilter();

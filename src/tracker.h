@@ -5,9 +5,6 @@
 #include "particleFilter.h"
 #include "adaboostDetect.h"
 
-/* Ali and M. N. Dailey, "Multiple human tracking in high-density crowds"
- Abschnitt 2.4 Motion Model */
-
 typedef struct trajectory {
     CvPoint* points;
     particleFilter* object;
@@ -16,6 +13,8 @@ typedef struct trajectory {
     int startFrame;
 } trajectory;
 
+/** Ali and M. N. Dailey, "Multiple human tracking in high-density crowds"
+    Abschnitt 2.4 Motion Model */
 class tracker {
 public:
     tracker();

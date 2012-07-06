@@ -20,7 +20,7 @@ void tracker::initTracker(IplImage* frame, CvRect* regions, int nRegions, int pa
         particleFilter* pf = new particleFilter();
         pf->initParticles(regions[i], particlesPerObject);
         trajectories[i].object = pf;
-        trajectories[i].object->objectID = 1;
+        trajectories[i].object->objectID = i;
         trajectories[i].object->weight = 1;
         trajectories[i].startFrame = 0;
         trajectories[i].histo = computeHistogram(frameHSV, regions[i]);
@@ -68,7 +68,7 @@ void tracker::next(IplImage* frame) {
     int w = frame->width;
     int h = frame->height;
     for (int i=0; i < nTrajectories; i++) {
-//        trajectories[i].object->transition(w, h);
+        trajectories[i].object->transition(w, h);
         trajectories[i].object->updateWeight(frameHSV, trajectories[i].histo);
         trajectories[i].object->normalizeWeights();
         trajectories[i].object->resample();

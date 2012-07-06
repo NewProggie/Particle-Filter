@@ -1,7 +1,0 @@
-digraph G {
-  rankdir=LR;
-  Voraussage [shape=none];
-  Korrektur [shape=none];
-  Voraussage -> Korrektur [label = "Messung vorgenommen" ];
-  Korrektur -> Voraussage;
-}

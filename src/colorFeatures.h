@@ -3,9 +3,6 @@
 
 #include <cv.h>
 
-/* Ali and M. N. Dailey, "Multiple human tracking in high-density crowds"
-   Abschnitt 2.5 Appearance Model */
-
 /** number of bins of HSV in histogram */
 #define NH 10
 #define NS 10
@@ -28,6 +25,8 @@ typedef struct {
     int n;                     /** length of histogram array */
 } histogram;
 
+/** Ali and M. N. Dailey, "Multiple human tracking in high-density crowds"
+ Abschnitt 2.5 Appearance Model */
 class colorFeatures {
 public:
     colorFeatures();

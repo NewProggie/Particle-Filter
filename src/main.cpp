@@ -32,6 +32,9 @@ int main() {
     int frameNo = 0;
     /** number of detected heads */
     int nHeads = 0;
+    /** number of current detected heads */
+    int n;
+    /** list of regions around each detected head */
     CvRect* regions;
     adaboostDetect* detect = new adaboostDetect;
     tracker* hTrack = new tracker;
@@ -51,7 +54,7 @@ int main() {
         } else {
             hTrack->next(frame);
             regions = 0;
-            int n = detect->detectObject(frame, &regions);
+            n = detect->detectObject(frame, &regions);
             nHeads += n;
             hTrack->addObjects(frame, regions, n);
         }
