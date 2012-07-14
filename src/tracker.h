@@ -19,12 +19,47 @@ class tracker {
 public:
     tracker();
     ~tracker();
+    /**
+     * Initializes trajectory for each detected head
+     * @param frame current video frame
+     * @param regions region for each detected head
+     * @param nRegions number of detected heads
+     * @param particlesPerObject number of particles for each detected object
+     */
     void initTracker(IplImage* frame, CvRect* regions, int nRegions, int particlesPerObject);
+    /**
+     * Merge trajectories
+     */
     void mergeTrack();
+    /**
+     * remove trajectory
+     */
     void removeTrack(int n);
+    /**
+     * Converts current frame to hsv and updates particle filter
+     * @param frame current video frame
+     */
     void next(IplImage* frame);
+    /**
+     * Updates object weights and removes trajectories whose occlusion count is
+     * above threshold
+     * @param frame current video frame
+     * @param adaboost current instance of adaboost detection
+     */
     void updateObjectWeights(IplImage* frame, adaboostDetect* adaboost);
+    /**
+     * Adds new found objects to the set of tracked persons and updates
+     * occlusion counts for trajectories and removes trajectories whose
+     * occlusion count is above threshold
+     * @param frame current video frame
+     * @param regions region for each detected head
+     * @param nRegions number of detected heads
+     */
     void addObjects(IplImage* frame, CvRect* regions, int nRegions);
+    /**
+     * Paints a rectangle around each detected head together with its specific ID
+     * @param frame current video frame
+     */
     void showResults(IplImage* frame);
     IplImage* subtractObjects(IplImage* frame);
     
@@ -37,6 +72,11 @@ public:
     int ccvth;
     int mode;
 private:
+    /**
+     * Calculates histogram for given frame and region
+     * @param frame current video frame
+     * @param region region for which histogram will be calculated
+     */
     histogram* computeHistogram(IplImage* frame, CvRect region);
 };
 

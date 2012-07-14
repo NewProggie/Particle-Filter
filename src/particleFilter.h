@@ -42,12 +42,18 @@ public:
     CvRect getParticleRect();
     CvPoint getParticleCenter();
     particle particles[MAX_PARTICLES];
+    /** Initializes particles */
     void initParticles(CvRect region, int particlesPerObject);
+    /** Reset particles */
     void resetParticles(CvRect region);
+    /** Moves particles */
     void transition(int w, int h);
+    /** Normalize weights of particles */
     void normalizeWeights();
+    /** Resamples particles */
     void resample();
     void displayParticles(IplImage* img, CvScalar nColor, CvScalar hColor, int param);
+    /** Updates particle weights */
     void updateWeight(IplImage* frameHSV, histogram* objectHisto);
     
     int nParticles;
