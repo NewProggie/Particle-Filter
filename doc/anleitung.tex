@@ -1,0 +1,52 @@
+\documentclass[a4paper, 11pt, twocolumn]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{graphicx} 
+\usepackage{layout} 
+%\usepackage{mathpazo} % Palatino
+%\usepackage{helvet} % Helvetica
+\usepackage{newcent} % New Century Schoolbook
+%\usepackage{courier} % Courier
+%\usepackage{mathptmx} % Times New Roman
+\usepackage{geometry}
+\usepackage{subfigure}
+\usepackage{fancyhdr}
+\usepackage{expdlist}
+\usepackage{makeidx}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{amsmath,amssymb,amstext}
+
+\fancyfoot[C]{\thepage}%  Spezielle Fusszeile
+\begin{document}
+
+\title{\textbf{Tracking von Gesichtern in belebten Umgebungen mit Hilfe eines Partikelfilters\\- Anleitung -}}
+\author{ \textit{Kai Wolf} \\ Kai.B.Wolf@student.hs-rm.de\vspace{0.8cm}\\Hochschule RheinMain\\University of Applied Sciences\\Wiesbaden Rüsselsheim Geisenheim}
+\date{\today} 
+\maketitle
+
+\section{Aufbau des Projekts} % (fold)
+\label{sec:aufbau_des_projekts}
+
+Das Projekt wurde mit dem Build-System \emph{CMake}\footnote{http://www.cmake.org/} erstellt. Als externe Abhängigkeiten wurden OpenCV\footnote{http://opencv.willowgarage.com/wiki/} und die GNU Scientific Library\footnote{http://www.gnu.org/software/gsl/} verwendet. Nach dem Entpacken des Projekts befinden sich folgende Dateien und Ordner im entpackten Ordner Particle-Filter:
+
+\begin{description}
+	\item[cmake\_modules] In diesem Ordner liegen Dateien, die CMake helfen, benötigte Abhängigkeiten aufzulösen
+	\item[data] In diesem Ordner befindet sich die im Projekt verwendetete Videodatei, sowie eine XML-Datei mit dem trainierten Gesichtsklassifikator
+	\item[doc] In diesem Ordner befindet sich die schriftliche Ausarbeitung
+	\item[src] Innerhalb dieses Ordners befindet der komplette Quelltext der Anwendung
+	\item[CMakeLists.txt] Diese Konfigurationsdatei wird von CMake verwendet, um das Projekt zu erstellen
+\end{description}
+
+% section aufbau_des_projekts (end)
+
+\section{Erstellung der Anwendung} % (fold)
+\label{sec:erstellung_der_anwendung}
+
+Um das Projekt zu erstellen, wird das Build-System CMake benötigt. Nach der Installation muss CMake mit der \texttt{CMakeLists.txt} aufgerufen und die gewünschte Entwicklungsumgebung ausgewählt werden. Danach sollte das Projekt erfolgreich erstellt werden können. Soll das Programm mit einer anderen Videodatei aufgerufen werden, muss in der Konfigurationsdatei die Variable \texttt{VIDEO\_PATH} entsprechend angepasst und das Projekt mit CMake neu erstellt werden.
+
+% section erstellung_der_anwendung (end)
+
+\end{document}
